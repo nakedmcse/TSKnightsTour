@@ -1,2 +1,3 @@
 # TSKnightsTour
-TS Implementation of the Knights Tour
+Implementation of the Knights Tour in TypeScript, using heuristics.
+
