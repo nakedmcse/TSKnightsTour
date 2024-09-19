@@ -60,9 +60,18 @@ class KnightMoves {
         ];
 
         // Here 0 (0 forward steps) and null (not available) mean different things, so must check for not null
-        const validMoves = moves.filter(x => x[0] !== null);
+        let validMoves = moves.filter(x => x[0] !== null);
         if(validMoves.length === 0) {
             return null;
+        }
+
+        if(validMoves.some(x => x[0] === 0) && validMoves.length > 1) {
+            // Remove dead ends unless its the only move
+            if(!validMoves.some(x => (x[0]??0)>0)) {
+                // Handle multiple dead end only response
+                return null;
+            }
+            validMoves = validMoves.filter(x => (x[0]??0)>0);
         }
 
         validMoves.sort((a,b) => (a[0]??0) - (b[0]??0));
@@ -72,28 +81,36 @@ class KnightMoves {
     }
 }
 
+// Array Clone - courtesy of @VictoriqueM
+type DeepArray<T> = T | DeepArray<T>[];
+
+const clone = <T>(items: DeepArray<T>): DeepArray<T> =>
+    Array.isArray(items)
+        ? items.map(item => Array.isArray(item) ? clone(item) : item)
+        : items;
+
 // Recursively walk the board
 function walkBoard(currentBoard:number[][], path: Vector[], winningPaths: Vector[][]): void {
     // Record move
     const x: number = path[path.length - 1].x ?? 0;
     const y: number = path[path.length - 1].y ?? 0;
-    const newBoard: number[][] = JSON.parse(JSON.stringify(currentBoard));
-    const newPath: Vector[] = JSON.parse(JSON.stringify(path));
+    const newBoard = clone(currentBoard);
     newBoard[x][y] = 1;
     const availableMoves: KnightMoves = new KnightMoves();
     availableMoves.update(x, y, newBoard);
-    const nextMoves = availableMoves.getMoves(newPath.length === 1);
+    const nextMoves = availableMoves.getMoves(path.length === 1);
 
     // Exit condition
     if(!nextMoves) {
         if(!newBoard.some(x => x.includes(0))) {
-            winningPaths.push(newPath);
+            winningPaths.push(path);
         }
         return;
     }
 
     // Search paths
     for(const chosenMove of nextMoves) {
+        const newPath: Vector[] = [...path];
         newPath.push(new Vector(x + (chosenMove.x??0), y + (chosenMove.y??0)));
         walkBoard(newBoard, newPath, winningPaths);
     }
