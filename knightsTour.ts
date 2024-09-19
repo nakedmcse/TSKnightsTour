@@ -94,7 +94,7 @@ function walkBoard(currentBoard:number[][], path: Vector[], winningPaths: Vector
     // Record move
     const x: number = path[path.length - 1].x ?? 0;
     const y: number = path[path.length - 1].y ?? 0;
-    const newBoard = clone(currentBoard);
+    const newBoard = currentBoard.map(x => [...x]);
     newBoard[x][y] = 1;
     const availableMoves: KnightMoves = new KnightMoves();
     availableMoves.update(x, y, newBoard);
@@ -132,3 +132,10 @@ const winningTours: Vector[][] = [];
 walkBoard(board, initialPath, winningTours);
 
 console.log(`Found ${winningTours.length} winning tours`);
+for(const tour of winningTours) {
+    const tourSet = Array.from(new Set(tour)).sort((a,b) => ((a.x ?? 0) - (b.x ?? 0) !== 0 ? (a.x ?? 0) - (b.x ?? 0)
+        : (a.y ?? 0) - (b.y ?? 0)));
+    if (tourSet.length !== tour.length) {
+        console.log("Tour Contains Duplicates");
+    }
+}
