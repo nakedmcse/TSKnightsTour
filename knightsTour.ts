@@ -45,10 +45,10 @@ class KnightMoves {
             ? this.calculateMoves(x-2, y+1, currentBoard) : null;
         this.left_down = this.inRange(x-2) && this.inRange(y-1) && currentBoard[x-2][y-1] === 0
             ? this.calculateMoves(x-2, y-1, currentBoard) : null;
-        this.right_up = this.inRange(x+2) && this.inRange(y+1) && currentBoard[x+2][y-1] === 0
-            ? this.calculateMoves(x+2, y-1, currentBoard) : null;
-        this.right_down = this.inRange(x+2) && this.inRange(y-1) && currentBoard[x+2][y+1] === 0
+        this.right_up = this.inRange(x+2) && this.inRange(y+1) && currentBoard[x+2][y+1] === 0
             ? this.calculateMoves(x+2, y+1, currentBoard) : null;
+        this.right_down = this.inRange(x+2) && this.inRange(y-1) && currentBoard[x+2][y-1] === 0
+            ? this.calculateMoves(x+2, y-1, currentBoard) : null;
     }
 
     public getMoves(isFirst:boolean): Vector[]|null {
